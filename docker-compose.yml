@@ -1,0 +1,35 @@
+version: '3'
+services:
+  # eContract Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: econtract
+    container_name: econtract
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8083:8089"
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    networks:
+      - econtract
+
+  # econtract-java
+  office:
+    image: eugenmayer/jodconverter:rest
+    container_name: office
+    ports:
+      - "8085:8080"
+    restart: unless-stopped
+    networks:
+      - econtract
+
+# Docker Networks
+networks:
+  econtract:
+    driver: bridge
